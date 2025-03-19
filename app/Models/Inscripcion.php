@@ -21,7 +21,9 @@ class Inscripcion extends Model
         'user_id',
         'pruebas',
         'tiempos',
-        'talla_playera'
+        'talla_playera',
+        'edad',
+        'pagado'
     ];
 
     public function user() {

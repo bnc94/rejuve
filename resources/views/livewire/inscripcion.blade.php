@@ -6,11 +6,9 @@
     </div>
     @if ($fechaActual > $competencia->fechaFinal)
         <p class="uppercase font-semibold text-center mb-2">Certificado de tiempos</p>
-        <a href="{{ route('competencias')}}">
-            <x-primary-button class="flex justify-start w-full gap-2 font-semibold">
-                {{ __('Descargar') }}
-            </x-primary-button>
-        </a>
+        <x-primary-button wire:click='descargarCertificado' class="flex justify-center w-full gap-2 font-semibold">
+            {{ __('Descargar') }}
+        </x-primary-button>
     @else
         <p class="uppercase font-semibold text-center mb-2">Inscripción</p>
         <div x-data="data()" x-init="pruebas=[$wire.pruebas, Array($wire.pruebas.length).fill(false)]" class="flex flex-col">
@@ -71,11 +69,15 @@
 
             <div x-show="showConfirmacion" class="flex flex-col mt-5">
                 <div class="flex flex-col w-full px-10 py-5 bg-blue-200 rounded-md shadow-md shadow-gray-600">
-                    <p class="text-center mb-2">Confirma tus pruebas y talla de playera</p>
-                    <p x-show="size">Talla seleccionada: <span x-text="size"></span></p>
+                    <p class="text-center mb-2">Resumen</p>
+                    <p class="text-lg">Talla de playera:</p>
+                    <p x-show="size" class="uppercase font-semibold text-sm"><span x-text="size"></span></p>
+                    <p x-show="numPruebas" class="text-lg mt-2">
+                        Pruebas (<span x-text="numPruebas" class="uppercase text-sm"></span>):
+                    </p>
                     <template x-for="prueba in pruebasInscritas">
                         <template x-if="prueba[1]">
-                            <p x-text="prueba[0]"></p>
+                            <p x-text="prueba[0]" class="font-semibold"></p>
                         </template>
                     </template>
                 </div>
@@ -106,6 +108,7 @@
             showTalla: false,
             showConfirmacion: false,
             size: "chica",
+            numPruebas: 0,
             sigPruebas(){
                 clickedButtonsTam = Object.values(this.clickedButtons).filter(value => value).length;
                 if (clickedButtonsTam >= 1) {
@@ -113,8 +116,12 @@
                     this.showTalla = true;
                     for (let i = 0; i < this.pruebas[0].length; i++) {
                         this.pruebasInscritas[i] = [this.pruebas[0][i], this.pruebas[1][i]]
+                        if (this.pruebas[1][i]) {
+                            this.numPruebas = this.numPruebas + 1;
+                        }
+                        console.log(this.pruebas[1][i]);
+                        
                     }
-                    // console.log(Alpine.raw(this.pruebasInscritas))
                 } else {
                     Swal.fire({
                         icon: "warning",

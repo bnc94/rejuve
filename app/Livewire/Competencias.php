@@ -22,7 +22,7 @@ class Competencias extends Component
         $mesAnterior = $mesActual - 1;
         $añoActual = $añoActual['year'];
         
-        $this->competencias = Competencia::where('disciplina', $disciplina)->where('fechaInicio', '>=', date('Y-'.$mesAnterior.'-d'))->get();
+        $this->competencias = Competencia::where('disciplina', $disciplina)->where('fechaInicio', '>=', date('Y-'.$mesAnterior.'-d'))->orderBy('fechaInicio', 'asc')->get();
         
         foreach ($this->competencias as $competencia) {
             if ($añoActual == date("Y", strtotime($competencia->fechaInicio))) {
